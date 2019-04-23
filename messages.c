@@ -1,15 +1,21 @@
-/*
+/****************************************
  * messages.c
- */
+ * 
+ * Implementation of message-manipulation
+ * functions/wrappers
+ * 
+ * Kat Cannon-MacMartin
+ ****************************************/
 
 #include "headers/paxos.h"
 
-message new_message(long type, int number, int value)
+message new_message(long type, int number, int value, int author)
 {
   message new_m = malloc(M_SIZE);
   new_m.m_type = type;
   new_m.m_num = number;
   new_m.m_val = value;
+  new_m.m_auth = author;
   return new_m;
 };
 
@@ -38,5 +44,13 @@ mqd_t open_queue(char *desc, int permissions)
   return mq_des;
 }
 
+int close_queue(mqd_t mq_des)
+{
+  if ((int retval = mq_close(mq_des)) == -1) {
+    perror("Error at close_queue\n");
+    exit(1);
+  }
+  return retval; 
+}
 
-
+  

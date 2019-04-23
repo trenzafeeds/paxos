@@ -19,26 +19,27 @@
 #include <sys/stat.h>
 #include <mqueue.h>
 
-#define M_QUEUE "/m_queue"
+#ifndef PAXHEADER
+#define PAXHEADER 1
 
 /* Definitions */
 #define TRUE 1
 #define FALSE 0
-
-#ifndef PAXHEADER
-#define PAXHEADER 1
 
 typedef struct _message *message;
 struct _message {
   long m_type;
   int m_num;
   int m_val;
+  int m_auth;
 };
 
 #define M_SIZE sizeof(_message)
 
-message new_message(long type, int number, int value);
+/* In messages.c */
+message new_message(long type, int number, int value, int author);
 mqd_t init_queue(char *desc, long m_flags, long m_max, long m_size);
 mqd_t open_queue(char *desc, int permissions);
+int close_queue(mqd_t mq_des);
 
 #endif /* PAXHEADER */
