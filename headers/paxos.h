@@ -9,7 +9,7 @@
 
 /* Standards */
 #include <stdio.h>
-#include <stlib.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
@@ -36,7 +36,7 @@ struct _message {
   int m_auth;
 };
 
-#define M_SIZE sizeof(_message)
+#define M_SIZE sizeof(struct _message)
 
 /* In messages.c */
 message new_message(long type, int number, int value, int author);
@@ -45,6 +45,9 @@ mqd_t open_queue(char *desc, int permissions);
 int close_queue(mqd_t mq_des);
 char *nid(int id);
 int send_m(message m_content, int *dests, int ind);
+
+/* In paxos.c */
+int main();
 
 #endif /* PAXHEADER */
 
