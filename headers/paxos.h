@@ -28,6 +28,18 @@
 #define DESCPREF "/_"
 #define DESCSIZE 4
 
+/* Message types */
+/* Prepare statement */
+#define MSG_PREP 1
+/* Promise (or denial) */
+#define MSG_PROM 2
+/* Proposal AKA Accept Request */
+#define MSG_PROP 3
+/* Accept (acceptance of proposal) */
+#define MSG_ACC 4
+/* Ack or nAck (misc) */
+#define MSG_ACK 5
+
 typedef struct _message *message;
 struct _message {
   long m_type;
