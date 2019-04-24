@@ -17,7 +17,7 @@ message new_message(long type, int number, int value, int author)
   new_m.m_val = value;
   new_m.m_auth = author;
   return new_m;
-};
+}
 
 mqd_t init_queue(char *desc, long m_flags, long m_max, long m_size)
 {
@@ -52,5 +52,30 @@ int close_queue(mqd_t mq_des)
   }
   return retval; 
 }
+
+char *nid(int id)
+{
+  char *desc = malloc(sizeof(char) * DESCSIZE);
+  char c = id;
+  snprintf(desc, DESCSIZE, "%s%c", DESCPREF, c);
+  return desc;
+}
+
+int send_m(message m_content, int *dests, int ind)
+{
+  int retval = 0;
+  for (int i = 0; i < ind; i++) {
+    char *path = nid(dests[i]);
+    mqd_t target = open_queue(path, O_WRONLY);
+    free(path);
+    if (mq_send(target, message, M_SIZE, 0) == -1) {
+      perror("Errore at send_m\n");
+      retval = -1;
+    }
+    close_queue(target);
+  }
+  return retval; 
+}
+
 
   
