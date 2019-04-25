@@ -58,13 +58,14 @@ struct _message {
 typedef struct _proc_info *proc_info;
 struct _proc_info {
   int id;
-  int leader;
+  int leader;  //TODO: Initialize to NULL
   /* For proposer */
   int curr;
   int inc;
   /* For acceptor */
   int prep;
   int acc;
+  int val;
   int order[MAXACC];
 };
 #define PROCINF_SIZE sizeof(struct _proc_info)

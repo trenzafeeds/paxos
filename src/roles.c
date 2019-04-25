@@ -44,8 +44,9 @@ int promise(proc_info self, int num, int value, int dest_id)
 {
   self->prep = num;
 
-  int *dest = dest_id;
-  message prom = new_message(MSG_PROM, num, val, self->id);
+  int dest[1];
+  dest[0] = dest_id;
+  message prom = new_message(MSG_PROM, num, value, self->id);
   int retval = send_m(prom, dest, 1);
 
   return retval;
@@ -53,4 +54,21 @@ int promise(proc_info self, int num, int value, int dest_id)
 
 int accept(proc_info self, message m_content)
 {
+  self->acc = m_content->m_num;
+  self->val = m_content->m_val;
+
+  message acc = new_message(MSG_ACC, m_content->m_num, m_content->m_val, self->id);
+  int dest_count;
+  int dest[2];
+  if (self->leader != NULL) {
+    dest[1] = self->leader;
+    dest_count = 2;
+  } else {
+    dest_count = 1;
+  }
+  dest[0] = m_content->m_auth;
+  
+  int retval = send_m(acc, dest, dest_count);
+  free(m_content);
+  return retval;
 }
