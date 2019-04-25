@@ -11,7 +11,7 @@
 
 message new_message(long type, int number, int value, int author)
 {
-  message new_m = malloc(sizeof(struct _message));
+  message new_m = malloc(M_SIZE);
   new_m->m_type = type;
   new_m->m_num = number;
   new_m->m_val = value;
@@ -77,8 +77,18 @@ int send_m(message m_content, int *dests, int ind)
     }
     close_queue(target);
   }
+  free(m_content);
   return retval; 
 }
 
+message receive_m(mqd_t mqdes)
+{
+  message m_content = malloc(M_SIZE);
+  if (mq_receive(mqdes, (char *) m_content, M_SIZE, NULL) == -1) {
+    return -1;
+  } else {
+    return m_content;
+  }
+}
 
   

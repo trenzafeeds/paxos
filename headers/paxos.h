@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
+#include <time.h>
 
 /* POSIX Messages */
 #include <fcntl.h>
@@ -27,6 +28,11 @@
 #define FALSE 0
 #define DESCPREF "/_"
 #define DESCSIZE 4
+#define FIRSTID 97
+
+/* Modify these for size of run */
+#define MAXACC 20
+#define MAXVAL 20
 
 /* Message types */
 /* Prepare statement */
@@ -47,8 +53,21 @@ struct _message {
   int m_val;
   int m_auth;
 };
-
 #define M_SIZE sizeof(struct _message)
+
+typedef struct _proc_info *proc_info;
+struct _proc_info {
+  int id;
+  int leader;
+  /* For proposer */
+  int curr;
+  int inc;
+  /* For acceptor */
+  int prep;
+  int acc;
+  int order[MAXACC];
+};
+#define PROCINF_SIZE sizeof(struct _proc_info)
 
 /* In messages.c */
 message new_message(long type, int number, int value, int author);
@@ -57,6 +76,9 @@ mqd_t open_queue(char *desc, int permissions);
 int close_queue(mqd_t mq_des);
 char *nid(int id);
 int send_m(message m_content, int *dests, int ind);
+message receive_m(mqd_t mqdes);
+
+/* In roles.c */
 
 /* In paxos.c */
 int main();
