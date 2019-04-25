@@ -94,6 +94,12 @@ int accept(proc_info self, message m_content)
   return retval;
 }
 
+int p_learn(proc_info self, message m_content)
+{
+  self->order[m_content->m_num] = m_content->m_val;
+  free(m_content);
+  return 0;
+}
 
 
 
