@@ -39,4 +39,18 @@ int propose(proc_info self, int value, int *acceptors, int majority)
 
   return retval;
 }
-  
+
+int promise(proc_info self, int num, int value, int dest_id)
+{
+  self->prep = num;
+
+  int *dest = dest_id;
+  message prom = new_message(MSG_PROM, num, val, self->id);
+  int retval = send_m(prom, dest, 1);
+
+  return retval;
+}
+
+int accept(proc_info self, message m_content)
+{
+}

@@ -79,6 +79,10 @@ int send_m(message m_content, int *dests, int ind);
 message receive_m(mqd_t mqdes);
 
 /* In roles.c */
+int prepare(proc_info self);
+int propose(proc_info self, int value, int *acceptors, int majority);
+int promise(proc_info self, int num, int value, int dest_id);
+int accept(proc_info self, message m_content);
 
 /* In paxos.c */
 int main();
