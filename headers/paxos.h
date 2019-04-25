@@ -43,8 +43,10 @@
 #define MSG_PROP 3
 /* Accept (acceptance of proposal) */
 #define MSG_ACC 4
+/* Teach accepted val (from learner) */
+#define MSG_TCH 5
 /* Ack or nAck (misc) */
-#define MSG_ACK 5
+#define MSG_ACK 6
 
 typedef struct _message *message;
 struct _message {
@@ -83,6 +85,7 @@ message receive_m(mqd_t mqdes);
 int prepare(proc_info self);
 int propose(proc_info self, int value, int *acceptors, int majority);
 int promise(proc_info self, int num, int value, int dest_id);
+int teach(proc_info self, int step, int value);
 int accept(proc_info self, message m_content);
 
 /* In paxos.c */

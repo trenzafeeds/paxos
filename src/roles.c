@@ -23,7 +23,7 @@ int prepare(proc_info self)
     }
   }
 
-  int retval = send_m(prep, acceptors, self->inc);
+  int retval = send_m(prep, acceptors, self->inc - 1);
 
   return retval;
 }
@@ -52,6 +52,27 @@ int promise(proc_info self, int num, int value, int dest_id)
   return retval;
 }
 
+int teach(proc_info self, int step, int value)
+{
+  message tch = new_message(MSG_TCH, step, value, self->id);
+
+  int pupils[self->inc - 1];
+  int j = 0;
+  for (int i = 0; i < (self->inc - 1); i++) {
+    if ((FIRSTID + j) != self->id) {
+      pupils[i] = FIRSTID + j;
+      j++;
+    } else {
+      j++;
+      pupils[i] = FIRSTID + j;
+    }
+  }
+
+  int retval = send_m(tch, pupils, self->inc - 1);
+
+  return retval;
+}
+
 int accept(proc_info self, message m_content)
 {
   self->acc = m_content->m_num;
@@ -72,3 +93,8 @@ int accept(proc_info self, message m_content)
   free(m_content);
   return retval;
 }
+
+
+
+
+                        
