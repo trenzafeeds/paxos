@@ -5,6 +5,8 @@
  * for basic Paxos implementation 
  *
  * Kat Cannon-MacMartin
+ *
+ * TODO: Vote tally in learner should be [current num, val, tally]
  ********************************/
 
 /* Standards */
@@ -68,6 +70,8 @@ struct _proc_info {
   int prep;
   int acc;
   int val;
+  /* Universal */
+  int round;
   int order[MAXACC];
 };
 #define PROCINF_SIZE sizeof(struct _proc_info)
@@ -87,6 +91,8 @@ int propose(proc_info self, int value, int *acceptors, int majority);
 int promise(proc_info self, int num, int value, int dest_id);
 int teach(proc_info self, int step, int value);
 int accept(proc_info self, message m_content);
+int p_learn(proc_info self, message m_content);
+int count_acc(proc_info self, int *tally, message m_content);
 
 /* In paxos.c */
 int main();

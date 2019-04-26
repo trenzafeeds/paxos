@@ -97,10 +97,38 @@ int accept(proc_info self, message m_content)
 int p_learn(proc_info self, message m_content)
 {
   self->order[m_content->m_num] = m_content->m_val;
+  self->round = m_content->m_num + 1;
   free(m_content);
   return 0;
 }
 
+int count_acc(proc_info self, int *tally, message m_content)
+{
+  if (m_content->m_num > tally[0]) {
+    tally[0] = m_content->m_num;
+    tally[1] = m_content->m_val;
+    tally[2] = 1;
+  } else if (m_content->m_num == tally[0]) {
+    tally[2]++;
+  }
 
+  free(m_content);
 
+  if (tally[2] > (self->inc / 2)) {
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+}
+
+int learn(proc_info self, int *tally)
+{
+  self->order[self->round] = tally[1];
+  teach(self, self->round, tally[1]);
+  self->round++;
+  return 0;
+}
+  
+  
+  
                         
