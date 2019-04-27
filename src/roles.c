@@ -116,19 +116,26 @@ int teach(proc_info self, int step, int value)
 
 int accept(proc_info self, message m_content)
 {
-  self->acc = m_content->m_num;
-  self->val = m_content->m_val;
+  int accd;
+  if (m_content->m_num >= self->prep) {
+    self->acc = m_content->m_num;
+    self->val = m_content->m_val;
 
-  message acc = new_message(MSG_ACC, m_content->m_num, m_content->m_val, self->id);
+    message acc = new_message(MSG_ACC, m_content->m_num, m_content->m_val, self->id);
 
-  int dests[self->inc];
-  for (int i = 0; i < self->inc; i++) {
-    dests[i] = FIRSTID + i;
-  }
+    int dests[self->inc];
+    for (int i = 0; i < self->inc; i++) {
+      dests[i] = FIRSTID + i;
+    }
   
-  int retval = send_m(acc, dests, self->inc);
+    send_m(acc, dests, self->inc);
+    accd = TRUE;
+  } else {
+    /* SEND DENIAL HERE? */
+    accd = FALSE;
+  }
   free(m_content);
-  return retval;
+  return accd;
 }
 
 int p_learn(proc_info self, message m_content)

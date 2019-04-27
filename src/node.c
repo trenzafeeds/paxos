@@ -11,12 +11,12 @@ int paxos(proc_info self)
 
     switch(recd_m->m_type) {
       case MSG_PREP:
-        acc_prep(self, recd_m); /* TODO: Handle T/F */
+        acc_prep(self, recd_m); /* TODO: Handle T/F (FOR ALL(?) OF THEM) */
         break;
       case MSG_PROM:
         acc_prom(self, recd_m);
       case MSG_PROP:
-        break;
+        accept(self, recd_m);
       case MSG_ACC:
         count_acc(self, recd_m);
         break;
