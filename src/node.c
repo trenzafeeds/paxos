@@ -6,23 +6,28 @@
 
 int paxos(proc_info self)
 {
+  message recd_m;
   if ((recd_m = receive_m(self->listen)) != -1) {
 
-    switch(recd_m->type) {
+    switch(recd_m->m_type) {
       case MSG_PREP:
-        acc_prep(self, recd_m);
+        acc_prep(self, recd_m); /* TODO: Handle T/F */
+        break;
       case MSG_PROM:
-
+        acc_prom(self, recd_m);
       case MSG_PROP:
-        
+        break;
       case MSG_ACC:
         count_acc(self, recd_m);
+        break;
       case MSG_TCH:
-
+        break;
     }
   } else {
     /* NO MESSAGE RECIEVED */
   }
+
+  return 0;
 }
   
 int node(int id, int inc)

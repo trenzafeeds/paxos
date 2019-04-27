@@ -40,11 +40,30 @@ int propose(proc_info self, int value, int *acceptors, int majority)
   return retval;
 }
 
+int acc_prom(proc_info self, message m_content)
+{
+  self->promises[self->prom_data[2]] = m_content->m_auth;
+  self->prom_data[2]++;
+
+  if (m_content->m_num > self->prom_data[0]) {
+    self->prom_data[0] = m_content->m_num;
+    self->prom_data[1] = m_content->m_val;
+  }
+
+  free(m_content);
+
+  if (self->prom_data[2] > (self->inc / 2)) {
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+}  
+
 int acc_prep(proc_info self, message m_content)
 {
   int retval;
   if (m_content->m_num > self->prep) {
-    promise(self, m_content->m_num, self->val, m_content->m_auth);
+    promise(self, self->acc, self->val, m_content->m_auth);
     retval = TRUE;
   } else {
     deny_prep(self, m_content->m_num, m_content->m_auth);
@@ -103,7 +122,7 @@ int accept(proc_info self, message m_content)
   message acc = new_message(MSG_ACC, m_content->m_num, m_content->m_val, self->id);
 
   int dests[self->inc];
-  for (int i = 0; i < self->inc, i++) {
+  for (int i = 0; i < self->inc; i++) {
     dests[i] = FIRSTID + i;
   }
   

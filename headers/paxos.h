@@ -31,7 +31,8 @@
 #define DESCPREF "/_"
 #define DESCSIZE 4
 #define FIRSTID 97
-#define MAXMSGS 100
+#define MAXMSGS 200
+#define MAXNODES 10
 
 /* Modify these for size of run */
 #define MAXACC 20
@@ -73,6 +74,8 @@ struct _proc_info {
   int val;
   /* Universal */
   int tally[3];
+  int promises[(MAXNODES / 2) + 1];
+  int prom_data[3]; /* Highest num, val, # of promises */
   int round;
   int order[MAXACC];
 };
@@ -90,6 +93,9 @@ message receive_m(mqd_t mqdes);
 /* In roles.c */
 int prepare(proc_info self);
 int propose(proc_info self, int value, int *acceptors, int majority);
+int acc_prom(proc_info self, message m_content);
+int acc_prep(proc_info self, message m_content);
+int deny_prep(proc_info self, int num, int dest_id);
 int promise(proc_info self, int num, int value, int dest_id);
 int teach(proc_info self, int step, int value);
 int accept(proc_info self, message m_content);
