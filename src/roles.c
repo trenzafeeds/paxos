@@ -40,6 +40,29 @@ int propose(proc_info self, int value, int *acceptors, int majority)
   return retval;
 }
 
+int acc_prep(proc_info self, message m_content)
+{
+  int retval;
+  if (m_content->m_num > self->prep) {
+    promise(self, m_content->m_num, self->val, m_content->m_auth);
+    retval = TRUE;
+  } else {
+    deny_prep(self, m_content->m_num, m_content->m_auth);
+    retval = FALSE;
+  }
+  free(m_content);
+  return retval;
+}
+
+int deny_prep(proc_info self, int num, int dest_id)
+{
+  int dest[1];
+  dest[0] = dest_id;
+  message nprom = new_message(MSG_NPROM, num, self->prep, self->id);
+  int retval = send_m(nprom, dest, 1);
+  return retval;
+} 
+
 int promise(proc_info self, int num, int value, int dest_id)
 {
   self->prep = num;
@@ -48,7 +71,6 @@ int promise(proc_info self, int num, int value, int dest_id)
   dest[0] = dest_id;
   message prom = new_message(MSG_PROM, num, value, self->id);
   int retval = send_m(prom, dest, 1);
-
   return retval;
 }
 
@@ -79,17 +101,13 @@ int accept(proc_info self, message m_content)
   self->val = m_content->m_val;
 
   message acc = new_message(MSG_ACC, m_content->m_num, m_content->m_val, self->id);
-  int dest_count;
-  int dest[2];
-  if (self->leader != NULL) {
-    dest[1] = self->leader;
-    dest_count = 2;
-  } else {
-    dest_count = 1;
+
+  int dests[self->inc];
+  for (int i = 0; i < self->inc, i++) {
+    dests[i] = FIRSTID + i;
   }
-  dest[0] = m_content->m_auth;
   
-  int retval = send_m(acc, dest, dest_count);
+  int retval = send_m(acc, dests, self->inc);
   free(m_content);
   return retval;
 }
@@ -102,19 +120,19 @@ int p_learn(proc_info self, message m_content)
   return 0;
 }
 
-int count_acc(proc_info self, int *tally, message m_content)
+int count_acc(proc_info self, message m_content)
 {
-  if (m_content->m_num > tally[0]) {
-    tally[0] = m_content->m_num;
-    tally[1] = m_content->m_val;
-    tally[2] = 1;
-  } else if (m_content->m_num == tally[0]) {
-    tally[2]++;
+  if (m_content->m_num > self->tally[0]) {
+    self->tally[0] = m_content->m_num;
+    self->tally[1] = m_content->m_val;
+    self->tally[2] = 1;
+  } else if (m_content->m_num == self->tally[0]) {
+    self->tally[2]++;
   }
 
   free(m_content);
 
-  if (tally[2] > (self->inc / 2)) {
+  if (self->tally[2] > (self->inc / 2)) {
     return TRUE;
   } else {
     return FALSE;

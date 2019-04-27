@@ -9,7 +9,7 @@
 TARGET  = paxos
 
 # Space separated list of all source files
-SOURCES = src/messages.c src/paxos.c src/roles.c
+SOURCES = src/messages.c src/paxos.c src/roles.c src/node.c
 
 # Space separated directories containing source files
 INCLUDE_DIRS =

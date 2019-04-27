@@ -31,6 +31,7 @@
 #define DESCPREF "/_"
 #define DESCSIZE 4
 #define FIRSTID 97
+#define MAXMSGS 100
 
 /* Modify these for size of run */
 #define MAXACC 20
@@ -48,7 +49,7 @@
 /* Teach accepted val (from learner) */
 #define MSG_TCH 5
 /* Ack or nAck (misc) */
-#define MSG_ACK 6
+#define MSG_NPROM 6
 
 typedef struct _message *message;
 struct _message {
@@ -62,7 +63,7 @@ struct _message {
 typedef struct _proc_info *proc_info;
 struct _proc_info {
   int id;
-  int leader;  //TODO: Initialize to NULL
+  mqd_t listen;
   /* For proposer */
   int curr;
   int inc;
@@ -71,6 +72,7 @@ struct _proc_info {
   int acc;
   int val;
   /* Universal */
+  int tally[3];
   int round;
   int order[MAXACC];
 };
@@ -92,7 +94,9 @@ int promise(proc_info self, int num, int value, int dest_id);
 int teach(proc_info self, int step, int value);
 int accept(proc_info self, message m_content);
 int p_learn(proc_info self, message m_content);
-int count_acc(proc_info self, int *tally, message m_content);
+int count_acc(proc_info self, message m_content);
+
+/* In node.c */
 
 /* In paxos.c */
 int main();
