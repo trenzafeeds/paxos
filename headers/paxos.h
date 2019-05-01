@@ -41,16 +41,16 @@
 /* Message types */
 /* Prepare statement */
 #define MSG_PREP 1
-/* Promise (or denial) */
-#define MSG_PROM 2
 /* Proposal AKA Accept Request */
-#define MSG_PROP 3
+#define MSG_PROP 2
 /* Accept (acceptance of proposal) */
-#define MSG_ACC 4
+#define MSG_ACC 3
 /* Teach accepted val (from learner) */
-#define MSG_TCH 5
+#define MSG_TCH 4
 /* Ack or nAck (misc) */
-#define MSG_NPROM 6
+#define MSG_NPROM 5
+/* Promise (or denial) */
+#define MSG_PROM 6
 
 typedef struct _message *message;
 struct _message {

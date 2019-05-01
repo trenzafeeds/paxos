@@ -42,27 +42,44 @@ int propose(proc_info self, int value, int *acceptors, int majority)
 
 int acc_prom(proc_info self, message m_content)
 {
-  self->promises[self->prom_data[2]] = m_content->m_auth;
-  self->prom_data[2]++;
+  if ((m_content->m_type - MSG_PROM) == self->curr) {
+    self->promises[self->prom_data[2]] = m_content->m_auth;
+    self->prom_data[2]++;
 
-  if (m_content->m_num > self->prom_data[0]) {
-    self->prom_data[0] = m_content->m_num;
-    self->prom_data[1] = m_content->m_val;
+    if (m_content->m_num > self->prom_data[0]) {
+      self->prom_data[0] = m_content->m_num;
+      self->prom_data[1] = m_content->m_val;
+    }
+
+    if (self->prom_data[2] > (self->inc / 2)) {
+      free(m_content);
+      return TRUE;
+    }
   }
-
   free(m_content);
+  return FALSE;
+}
 
-  if (self->prom_data[2] > (self->inc / 2)) {
-    return TRUE;
-  } else {
-    return FALSE;
+int acc_nprom(proc_info self, message m_content)
+{
+  if (m_content->m_num == self->curr) {
+    for (int i = 0; i < self->inc; i++) {
+      self->promises[i] = 0;
+    }
+    for (int i = 0; i < 3; i++) {
+      self->prom_data[i] = 0;
+    }
+    self->curr += self->inc;
   }
-}  
+  free(m_content);
+  return 0;
+}
 
 int acc_prep(proc_info self, message m_content)
 {
   int retval;
   if (m_content->m_num > self->prep) {
+    self->prep = m_content->m_num;
     promise(self, self->acc, self->val, m_content->m_auth);
     retval = TRUE;
   } else {
@@ -84,11 +101,11 @@ int deny_prep(proc_info self, int num, int dest_id)
 
 int promise(proc_info self, int num, int value, int dest_id)
 {
-  self->prep = num;
-
+  /* NOTE: in this case, `num` is the highest number previously accepted,
+     whereas self->prep is the number of the prepare/promise. */
   int dest[1];
   dest[0] = dest_id;
-  message prom = new_message(MSG_PROM, num, value, self->id);
+  message prom = new_message(MSG_PROM + self->prep, num, value, self->id);
   int retval = send_m(prom, dest, 1);
   return retval;
 }

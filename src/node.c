@@ -13,10 +13,8 @@ int paxos(proc_info self)
       case MSG_PREP:
         acc_prep(self, recd_m); /* TODO: Handle T/F (FOR ALL(?) OF THEM) */
         break;
-      case MSG_PROM:
-        acc_prom(self, recd_m);
-        break;
       case MSG_NPROM:
+        acc_nprom(self, recd_m);
         break;
       case MSG_PROP:
         accept(self, recd_m);
@@ -24,9 +22,16 @@ int paxos(proc_info self)
       case MSG_ACC:
         count_acc(self, recd_m);
         break;
-      case default:
-        perror("Message recieved with incorrect type.\n");
-        exit(1);
+      default:
+        if (recd_m->m_type >= MSG_PROM) {
+          if (acc_prom(self, recd_m)) {
+            /* Reached majority */
+          }
+        } else {
+          perror("Message type error.\n");
+          exit(1);
+        }
+        break;
     }
   } else {
     /* NO MESSAGE RECIEVED */
