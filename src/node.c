@@ -15,13 +15,18 @@ int paxos(proc_info self)
         break;
       case MSG_PROM:
         acc_prom(self, recd_m);
+        break;
+      case MSG_NPROM:
+        break;
       case MSG_PROP:
         accept(self, recd_m);
+        break;
       case MSG_ACC:
         count_acc(self, recd_m);
         break;
-      case MSG_TCH:
-        break;
+      case default:
+        perror("Message recieved with incorrect type.\n");
+        exit(1);
     }
   } else {
     /* NO MESSAGE RECIEVED */
@@ -40,9 +45,10 @@ int node(int id, int inc)
   char *mypath = nid(id);
   me->listen = init_queue(mypath, O_NONBLOCK, MAXMSGS, M_SIZE);
 
-
+  /* REMEMBER TO INCREMENT me->round SOMEWHERE -- UNLESS it gets incremented in learn function */
   
   close_queue(me->listen);
   mq_unlink(mypath);
+  free(me);
   return 0;
 }
