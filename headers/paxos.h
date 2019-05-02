@@ -16,6 +16,7 @@
 #include <signal.h>
 #include <errno.h>
 #include <time.h>
+#include <string.h>
 
 /* POSIX Messages */
 #include <fcntl.h>
@@ -31,7 +32,7 @@
 #define DESCPREF "/_"
 #define DESCSIZE 4
 #define FIRSTID 97
-#define MAXMSGS 200
+#define MAXMSGS 10
 #define MAXNODES 10
 
 /* Modify these for size of run */
@@ -60,7 +61,7 @@ struct _message {
   int m_val;
   int m_auth;
 };
-#define M_SIZE sizeof(struct _message)
+#define M_SIZE sizeof(struct _proc_info)
 
 typedef struct _proc_info *proc_info;
 struct _proc_info {
@@ -92,6 +93,9 @@ int send_m(message m_content, int *dests, int ind);
 message receive_m(mqd_t mqdes);
 
 /* In utils.c */
+int roundend(proc_info self);
+int clear_data(proc_info self);
+int clear_inbox(proc_info self);
 
 /* In roles.c */
 int prepare(proc_info self);

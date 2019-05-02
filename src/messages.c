@@ -23,12 +23,13 @@ mqd_t init_queue(char *desc, long m_flags, long m_max, long m_size)
 {
   mqd_t mq_des;
   struct mq_attr attr;
+  mode_t mode = 0664;
   attr.mq_maxmsg = m_max;
   attr.mq_msgsize = m_size;
   attr.mq_flags = m_flags;
 
-  if ((mq_des = mq_open(desc, O_RDWR | O_CREAT, 0664, &attr)) == -1) {
-    perror("Error at init_queue\n");
+  if ((mq_des = mq_open(desc, O_CREAT | O_RDWR, mode, &attr)) == -1) {
+    perror("Error at init_queue");
     exit(1);
   }
 
@@ -39,7 +40,7 @@ mqd_t open_queue(char *desc, int permissions)
 {
   mqd_t mq_des;
   if ((mq_des = mq_open(desc, permissions)) == -1) {
-    perror("Error at open_queue\n");
+    perror("Error at open_queue");
     exit(1);
   }
 
@@ -50,7 +51,7 @@ int close_queue(mqd_t mq_des)
 {
   int retval;
   if ((retval = mq_close(mq_des)) == -1) {
-    perror("Error at close_queue\n");
+    perror("Error at close_queue");
     exit(1);
   }
   return retval; 

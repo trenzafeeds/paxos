@@ -37,10 +37,11 @@ int paxos(proc_info self)
 
     if (moacc) {
       learn(self);
-      /* Here be learn routine */
+      roundend(self);
+      return 1;
     }
   } else {
-    /* NO MESSAGE RECIEVED */
+    return -1;
   }
 
   return 0;
@@ -55,9 +56,11 @@ int node(int id, int inc)
   me->inc = inc;
   char *mypath = nid(id);
   me->listen = init_queue(mypath, O_NONBLOCK, MAXMSGS, M_SIZE);
-
-  /* REMEMBER TO INCREMENT me->round SOMEWHERE -- UNLESS it gets incremented in learn function */
-  
+  /*
+  while (paxos(me) == -1) {
+    sleep(1);
+  }
+  */
   close_queue(me->listen);
   mq_unlink(mypath);
   free(me);
