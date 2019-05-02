@@ -7,6 +7,7 @@
 int paxos(proc_info self)
 {
   message recd_m;
+  int moacc = FALSE; /* moacc = Majority Of ACCeptances */
   if ((recd_m = receive_m(self->listen)) != -1) {
 
     switch(recd_m->m_type) {
@@ -20,7 +21,7 @@ int paxos(proc_info self)
         accept(self, recd_m);
         break;
       case MSG_ACC:
-        count_acc(self, recd_m);
+        moacc = count_acc(self, recd_m);
         break;
       default:
         if (recd_m->m_type >= MSG_PROM) {
@@ -32,6 +33,11 @@ int paxos(proc_info self)
           exit(1);
         }
         break;
+    }
+
+    if (moacc) {
+      learn(self);
+      /* Here be learn routine */
     }
   } else {
     /* NO MESSAGE RECIEVED */

@@ -151,6 +151,7 @@ int accept(proc_info self, message m_content)
     /* SEND DENIAL HERE? */
     accd = FALSE;
   }
+
   free(m_content);
   return accd;
 }
@@ -182,10 +183,9 @@ int count_acc(proc_info self, message m_content)
   }
 }
 
-int learn(proc_info self, int *tally)
+int learn(proc_info self)
 {
-  self->order[self->round] = tally[1];
-  teach(self, self->round, tally[1]);
+  self->order[self->round] = self->tally[1];
   self->round++;
   return 0;
 }

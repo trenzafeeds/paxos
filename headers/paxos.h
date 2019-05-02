@@ -38,6 +38,7 @@
 #define MAXACC 20
 #define MAXVAL 20
 
+
 /* Message types */
 /* Prepare statement */
 #define MSG_PREP 1
@@ -90,10 +91,13 @@ char *nid(int id);
 int send_m(message m_content, int *dests, int ind);
 message receive_m(mqd_t mqdes);
 
+/* In utils.c */
+
 /* In roles.c */
 int prepare(proc_info self);
 int propose(proc_info self, int value, int *acceptors, int majority);
 int acc_prom(proc_info self, message m_content);
+int acc_nprom(proc_info self, message m_content);
 int acc_prep(proc_info self, message m_content);
 int deny_prep(proc_info self, int num, int dest_id);
 int promise(proc_info self, int num, int value, int dest_id);
@@ -101,8 +105,11 @@ int teach(proc_info self, int step, int value);
 int accept(proc_info self, message m_content);
 int p_learn(proc_info self, message m_content);
 int count_acc(proc_info self, message m_content);
+int learn(proc_info self);
 
 /* In node.c */
+int paxos(proc_info self);
+int node(int id, int inc);
 
 /* In paxos.c */
 int main();
