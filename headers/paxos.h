@@ -82,6 +82,8 @@ struct _proc_info {
   int prom_data[3]; /* Highest num, val, # of promises */
   int round;
   int order[MAXACC];
+  /* Message counting */
+  int received;
 };
 #define PROCINF_SIZE sizeof(struct _proc_info)
 

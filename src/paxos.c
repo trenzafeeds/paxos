@@ -16,8 +16,11 @@ int main(int argc, char* argv[])
   } else {
     nodes = atoi(argv[1]);
     if (nodes > MAXNODES) {
-      printf("Error, MAXNODES is currently %d. Recompile with a MAXNODES larger than %d.",
+      printf("Error: MAXNODES is currently %d. Recompile with a MAXNODES larger than %d.",
              MAXNODES, nodes);
+      exit(1);
+    } else if (nodes < 5) {
+      printf("Error: Sorry, Paxos only likes to be run with 5 or more nodes at the moment.\n");
       exit(1);
     }
   }
@@ -33,6 +36,7 @@ int main(int argc, char* argv[])
       printf("Forked: %d\n", (int) pid);
     }
   }
+  printf("\n");
 
   for (i = 0; i < nodes; i++) {
     waitpid(-1, NULL, WUNTRACED);

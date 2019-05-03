@@ -14,17 +14,12 @@ int roundend(proc_info self)
 
 int clear_data(proc_info self)
 {
-  int i;
   self->prep = 0;
   self->acc = 0;
   self->val = 0;
-  for (i = 0; i < 3; i++) {
-    self->tally[i] = 0;
-    self->prom_data[i] = 0;
-  }
-  for (i = 0; i <= (MAXNODES/2); i++) {
-    self->promises[i] = 0;
-  }
+  wipe(self->tally, 3);
+  wipe(self->prom_data, 3);
+  wipe(self->promises, (MAXNODES/2) + 1);
   return 0;
 }
 
@@ -39,6 +34,7 @@ int clear_inbox(proc_info self)
       free(clear);
       break;
     }
+    self->received++;
     free(clear);
   }
   return 0;

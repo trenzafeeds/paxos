@@ -9,7 +9,7 @@ int paxos(proc_info self)
   message recd_m;
   int moacc = FALSE; /* moacc = Majority Of ACCeptances */
   if ((recd_m = receive_m(self->listen)) != -1) {
-
+    self->received++;
     switch(recd_m->m_type) {
       case MSG_PREP:
         acc_prep(self, recd_m); /* TODO: Handle T/F (FOR ALL(?) OF THEM) */
@@ -25,9 +25,7 @@ int paxos(proc_info self)
         break;
       default:
         if (recd_m->m_type >= MSG_PROM) {
-          printf("Rec prom: %d\n", self->curr);
           if (acc_prom(self, recd_m)) {
-            printf("Acc_prom returned true\n");
             propose(self, self->prom_data[1], self->promises, self->prom_data[2]);
             wipe(self->prom_data, 3);
             wipe(self->promises, (MAXNODES/2) + 1);
@@ -40,7 +38,6 @@ int paxos(proc_info self)
     }
 
     if (moacc) {
-      printf("Time to learn!\n");
       learn(self);
       roundend(self);
       return 1;
@@ -61,6 +58,7 @@ int node(int id, int inc)
   me->id = id;
   me->curr = id - FIRSTID + 1;
   me->inc = inc;
+  me->received = 0;
   char *mypath = nid(id);
   me->listen = init_queue(mypath, 0, MAXMSGS, M_SIZE);
   int accu;
@@ -72,7 +70,7 @@ int node(int id, int inc)
     sleep(1);
   }
   
-  printf("%d\n", accu);
+  printf("Process %d learned %d in %d messages.\n", me->id, me->order[0], me->received);
   
   close_queue(me->listen);
   mq_unlink(mypath);

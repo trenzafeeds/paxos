@@ -31,6 +31,7 @@ int prepare(proc_info self)
 int propose(proc_info self, int value, int *acceptors, int majority)
 {
   if (value == NULL) {
+    srand(time(NULL));
     value = rand() % MAXVAL;
   }
 
@@ -42,7 +43,6 @@ int propose(proc_info self, int value, int *acceptors, int majority)
 
 int acc_prom(proc_info self, message m_content)
 {
-  int i;
   if ((m_content->m_type - MSG_PROM) == self->curr) {
     self->promises[self->prom_data[2]] = m_content->m_auth;
     self->prom_data[2]++;
@@ -64,12 +64,8 @@ int acc_prom(proc_info self, message m_content)
 int acc_nprom(proc_info self, message m_content)
 {
   if (m_content->m_num == self->curr) {
-    for (int i = 0; i < self->inc; i++) {
-      self->promises[i] = 0;
-    }
-    for (int i = 0; i < 3; i++) {
-      self->prom_data[i] = 0;
-    }
+    wipe(self->promises, (MAXNODES/2) + 1);
+    wipe(self->prom_data, 3);
     self->curr += self->inc;
   }
   free(m_content);
