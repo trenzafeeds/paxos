@@ -5,11 +5,22 @@
 #include "../headers/paxos.h"
 #define TESTNODES 5
 
-int main(){
-
+int main(int argc, char* argv[])
+{
+  int nodes;
   int i;
   pid_t pid;
-  int nodes = TESTNODES;
+  
+  if (argc <= 1) {
+    nodes = TESTNODES;
+  } else {
+    nodes = atoi(argv[1]);
+    if (nodes > MAXNODES) {
+      printf("Error, MAXNODES is currently %d. Recompile with a MAXNODES larger than %d.",
+             MAXNODES, nodes);
+      exit(1);
+    }
+  }
 
   for (i = 0; i < nodes; i++) {
     if ((pid = fork()) == -1) {
