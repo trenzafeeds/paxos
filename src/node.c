@@ -63,6 +63,7 @@ int node(int id, int inc)
   me->listen = init_queue(mypath, 0, MAXMSGS, M_SIZE);
   int accu;
 
+  
   raise(SIGTSTP);
   
   while ((accu = paxos(me)) != 1) {
