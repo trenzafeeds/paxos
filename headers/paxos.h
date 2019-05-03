@@ -98,6 +98,7 @@ message receive_m(mqd_t mqdes);
 int roundend(proc_info self);
 int clear_data(proc_info self);
 int clear_inbox(proc_info self);
+int wipe(int *arr, int len);
 
 /* In roles.c */
 int prepare(proc_info self);

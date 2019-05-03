@@ -43,3 +43,11 @@ int clear_inbox(proc_info self)
   }
   return 0;
 }
+
+int wipe(int *arr, int len)
+{
+  for (int i = 0; i < len; i++) {
+    arr[i] = 0;
+  }
+  return 0;
+}

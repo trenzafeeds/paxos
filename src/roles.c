@@ -42,6 +42,7 @@ int propose(proc_info self, int value, int *acceptors, int majority)
 
 int acc_prom(proc_info self, message m_content)
 {
+  int i;
   if ((m_content->m_type - MSG_PROM) == self->curr) {
     self->promises[self->prom_data[2]] = m_content->m_auth;
     self->prom_data[2]++;

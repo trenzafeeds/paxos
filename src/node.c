@@ -29,6 +29,8 @@ int paxos(proc_info self)
           if (acc_prom(self, recd_m)) {
             printf("Acc_prom returned true\n");
             propose(self, self->prom_data[1], self->promises, self->prom_data[2]);
+            wipe(self->prom_data, 3);
+            wipe(self->promises, (MAXNODES/2) + 1);
           }
         } else {
           perror("Message type error.\n");
