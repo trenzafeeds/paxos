@@ -7,10 +7,11 @@
 
 int main(){
 
+  int i;
   pid_t pid;
   int nodes = TESTNODES;
 
-  for (int i = 0; i < nodes; i++) {
+  for (i = 0; i < nodes; i++) {
     if ((pid = fork()) == -1) {
       perror("Fork error\n");
       exit(1);
@@ -21,5 +22,10 @@ int main(){
       printf("Forked: %d\n", (int) pid);
     }
   }
+
+  for (i = 0; i < nodes; i++) {
+    wait(1);
+  }
+  
   return 1;
 }

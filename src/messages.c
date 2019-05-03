@@ -28,7 +28,7 @@ mqd_t init_queue(char *desc, long m_flags, long m_max, long m_size)
   attr.mq_msgsize = m_size;
   attr.mq_flags = m_flags;
 
-  if ((mq_des = mq_open(desc, O_CREAT | O_RDWR, mode, &attr)) == -1) {
+  if ((mq_des = mq_open(desc, O_CREAT | O_RDWR | O_NONBLOCK, mode, &attr)) == -1) {
     perror("Error at init_queue");
     exit(1);
   }
@@ -73,7 +73,7 @@ int send_m(message m_content, int *dests, int ind)
     mqd_t target = open_queue(path, O_WRONLY);
     free(path);
     if (mq_send(target, (char *) m_content, M_SIZE, 0) == -1) {
-      perror("Error at send_m\n");
+      perror("Error at send_m");
       retval = -1;
     }
     close_queue(target);

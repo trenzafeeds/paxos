@@ -25,8 +25,10 @@ int paxos(proc_info self)
         break;
       default:
         if (recd_m->m_type >= MSG_PROM) {
+          printf("Rec prom: %d\n", self->curr);
           if (acc_prom(self, recd_m)) {
-            /* Reached majority */
+            printf("Acc_prom returned true\n");
+            /* majority of promises */
           }
         } else {
           perror("Message type error.\n");
@@ -41,7 +43,9 @@ int paxos(proc_info self)
       return 1;
     }
   } else {
-    return -1;
+    if (self->id == 97) {
+      prepare(self);
+    }
   }
 
   return 0;
@@ -55,12 +59,15 @@ int node(int id, int inc)
   me->curr = id - FIRSTID + 1;
   me->inc = inc;
   char *mypath = nid(id);
-  me->listen = init_queue(mypath, O_NONBLOCK, MAXMSGS, M_SIZE);
-  /*
-  while (paxos(me) == -1) {
+  me->listen = init_queue(mypath, 0, MAXMSGS, M_SIZE);
+  int accu;
+  
+  while ((accu = paxos(me)) != 1) {
     sleep(1);
   }
-  */
+  
+  printf("%d\n", accu);
+  
   close_queue(me->listen);
   mq_unlink(mypath);
   free(me);

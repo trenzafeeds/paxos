@@ -45,12 +45,13 @@ int acc_prom(proc_info self, message m_content)
   if ((m_content->m_type - MSG_PROM) == self->curr) {
     self->promises[self->prom_data[2]] = m_content->m_auth;
     self->prom_data[2]++;
-
+    
     if (m_content->m_num > self->prom_data[0]) {
       self->prom_data[0] = m_content->m_num;
       self->prom_data[1] = m_content->m_val;
     }
 
+    printf("Prom_maj: %d vs. %d\n", self->prom_data[2], self->inc / 2);
     if (self->prom_data[2] > (self->inc / 2)) {
       free(m_content);
       return TRUE;
