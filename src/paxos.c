@@ -24,7 +24,13 @@ int main(){
   }
 
   for (i = 0; i < nodes; i++) {
-    wait(1);
+    waitpid(-1, NULL, WUNTRACED);
+  }
+
+  kill(0, SIGCONT);
+
+  for (i = 0; i < nodes; i++) {
+    wait(NULL);
   }
   
   return 1;

@@ -28,7 +28,7 @@ int paxos(proc_info self)
           printf("Rec prom: %d\n", self->curr);
           if (acc_prom(self, recd_m)) {
             printf("Acc_prom returned true\n");
-            /* majority of promises */
+            propose(self, self->prom_data[1], self->promises, self->prom_data[2]);
           }
         } else {
           perror("Message type error.\n");
@@ -38,6 +38,7 @@ int paxos(proc_info self)
     }
 
     if (moacc) {
+      printf("Time to learn!\n");
       learn(self);
       roundend(self);
       return 1;
@@ -61,6 +62,8 @@ int node(int id, int inc)
   char *mypath = nid(id);
   me->listen = init_queue(mypath, 0, MAXMSGS, M_SIZE);
   int accu;
+
+  raise(SIGTSTP);
   
   while ((accu = paxos(me)) != 1) {
     sleep(1);

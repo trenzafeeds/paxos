@@ -51,7 +51,6 @@ int acc_prom(proc_info self, message m_content)
       self->prom_data[1] = m_content->m_val;
     }
 
-    printf("Prom_maj: %d vs. %d\n", self->prom_data[2], self->inc / 2);
     if (self->prom_data[2] > (self->inc / 2)) {
       free(m_content);
       return TRUE;

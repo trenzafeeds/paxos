@@ -40,6 +40,7 @@ mqd_t open_queue(char *desc, int permissions)
 {
   mqd_t mq_des;
   if ((mq_des = mq_open(desc, permissions)) == -1) {
+    printf("%s", desc);
     perror("Error at open_queue");
     exit(1);
   }

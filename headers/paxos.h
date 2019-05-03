@@ -17,6 +17,8 @@
 #include <errno.h>
 #include <time.h>
 #include <string.h>
+#include <signal.h>
+#include <sys/wait.h>
 
 /* POSIX Messages */
 #include <fcntl.h>
