@@ -26,6 +26,10 @@ int paxos(proc_info self)
       default:
         if (recd_m->m_type >= MSG_PROM) {
           if (acc_prom(self, recd_m)) {
+            #ifdef DEBUG
+            printf("Proposer received majority of promises. Proposing with number %d\n",
+                   self->curr);
+            #endif
             propose(self, self->prom_data[1], self->promises, self->prom_data[2]);
             wipe(self->prom_data, 3);
             wipe(self->promises, (MAXNODES/2) + 1);
@@ -44,6 +48,9 @@ int paxos(proc_info self)
     }
   } else {
     if (self->id == 97) {
+      #ifdef DEBUG
+      printf("Proposer issuing prepare with number %d\n", self->curr);
+      #endif
       prepare(self);
     }
   }
@@ -63,6 +70,9 @@ int node(int id, int inc)
   me->listen = init_queue(mypath, 0, MAXMSGS, M_SIZE);
   int accu;
 
+  #ifdef DEBUG
+    printf("Process %d setup, going to sleep\n", me->id);
+  #endif
   
   raise(SIGTSTP);
   

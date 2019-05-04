@@ -25,6 +25,10 @@ int main(int argc, char* argv[])
     }
   }
 
+  #ifdef DEBUG
+  printf("Toy Paxos running in VERBOSE mode with %d nodes\n", nodes);
+  #endif
+  
   for (i = 0; i < nodes; i++) {
     if ((pid = fork()) == -1) {
       perror("Fork error\n");
@@ -33,15 +37,18 @@ int main(int argc, char* argv[])
       node(FIRSTID + i, nodes);
       exit(0);
     } else {
-      printf("Forked: %d\n", (int) pid);
+      printf("Forked: %d with id: %d\n", (int) pid, FIRSTID + i);
     }
   }
-  printf("\n");
 
   for (i = 0; i < nodes; i++) {
     waitpid(-1, NULL, WUNTRACED);
   }
-
+  
+  printf("\n");
+  #ifdef DEBUG
+  printf("Waking all processes up\n");
+  #endif
   kill(0, SIGCONT);
 
   for (i = 0; i < nodes; i++) {

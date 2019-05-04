@@ -25,6 +25,10 @@
 #include <sys/stat.h>
 #include <mqueue.h>
 
+/* Debug mode option.
+ * Uncomment to enable. */
+//#define DEBUG
+
 #ifndef PAXHEADER
 #define PAXHEADER 1
 
@@ -40,7 +44,6 @@
 /* Modify these for size of run */
 #define MAXACC 20
 #define MAXVAL 20
-
 
 /* Message types */
 /* Prepare statement */

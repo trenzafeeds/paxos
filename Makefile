@@ -15,7 +15,7 @@ SOURCES = src/messages.c src/paxos.c src/roles.c src/utils.c src/node.c
 INCLUDE_DIRS =
 
 # Compiler flags (e.g. optimization, links, etc.):
-CFLAGS = -O2 -g -Wall
+CFLAGS = -O2 -g -w
 
 # Compiler:
 CC = gcc
