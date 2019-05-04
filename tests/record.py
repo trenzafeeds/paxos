@@ -2,6 +2,10 @@
 
 """
 record.py
+
+USAGE:
+$ ./paxos [INT] | tests/record.py
+
 """
 
 import sys
@@ -14,7 +18,7 @@ def avg_msg(dataarr):
     messages = 0
     for entry in dataarr:
         messages += entry[2]
-    return float(messages)/float(nodes)
+    return (messages, float(messages)/float(nodes))
 
 if __name__== "__main__":
     argarr = []
@@ -27,8 +31,8 @@ if __name__== "__main__":
                 argarr.append(line)
         for procline in argarr:
             numarr.append(process_line(procline))
-            
-        print(avg_msg(numarr))
+       	result = avg_msg(numarr)
+        print "Total messages: {}\nAverage messages per node {}".format(result[0], result[1])
 
     else:
         print "Please pipe output of paxos into record.py"
