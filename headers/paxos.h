@@ -39,7 +39,7 @@
 #define DESCSIZE 4
 #define FIRSTID 97
 #define MAXMSGS 10
-#define MAXNODES 10
+#define MAXNODES 15
 
 /* Modify these for size of run */
 #define MAXACC 20
@@ -66,7 +66,7 @@ struct _message {
   int m_val;
   int m_auth;
 };
-#define M_SIZE sizeof(struct _proc_info)
+#define M_SIZE sizeof(struct _message)
 
 typedef struct _proc_info *proc_info;
 struct _proc_info {
